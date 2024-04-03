@@ -1,9 +1,11 @@
-
+const validarArray = arreglo => {
+    return (!(arreglo.length === 0) && !(arreglo === undefined)) ? true : false;
+}
 // Función sumArray: Suma de todos los elementos de un array
 // Parámetros: array (Array) - Un array de números
 // Devuelve: Number - La suma de todos los elementos del array
 const sumArray = (num) => {
-    return result = num.reduce((a,b)=> a+b,0);
+    return result = num.reduce((a, b) => a + b, 0);
 };
 
 // Función filterEvenNumbers: Filtrar números pares de un array
@@ -16,14 +18,15 @@ const filterEvenNumbers = (num) => {
 // Función findMaxNumber: Encontrar el mayor número en un array
 // Parámetros: array (Array) - Un array de números
 // Devuelve: Number - El mayor número en el array
-const findMaxNumber = (num) => {
+const findMaxNumber = (arreglo) => {
     maxNum = 0;
-    for (i = 0; i < num.length; i++){
-        if(num[i] > maxNum){
-            maxNum = num[i];
-        }
+    if (validarArray(arreglo)) {
+        arreglo.sort((a, b) => b - a)
+        let number = arreglo[0];
+        return number;
+    } else {
+        return undefined;
     }
-    return maxNum;
 };
 
 // Función toUpperCaseStrings: Convertir un array de strings a mayúsculas
@@ -38,17 +41,17 @@ const toUpperCaseStrings = (varchars) => {
 // Devuelve: Number - El promedio de los números en el array
 const calculateAverage = (num) => {
     let prom = 0;
-    for (i = 0; i < num.length; i++){
+    for (i = 0; i < num.length; i++) {
         prom = prom + num[i];
     }
-    return prom = prom/num.length;
+    return prom = prom / num.length;
 };
 
 // Función sortNumbersAscending: Ordenar un array de números de forma ascendente
 // Parámetros: array (Array) - Un array de números
 // Devuelve: Array - Un nuevo array con los números ordenados de forma ascendente
 const sortNumbersAscending = (num) => {
-    return num.sort((a,b) => a - b);
+    return num.sort((a, b) => a - b);
 };
 
 // Función findFirstElement: Encontrar el primer elemento que cumple una condición en un array
@@ -56,8 +59,12 @@ const sortNumbersAscending = (num) => {
 // - array (Array) - Un array de elementos
 // - condition (Function) - Una función de condición que devuelve true o false
 // Devuelve: Any - El primer elemento que cumple con la condición, o undefined si ninguno lo hace
-const findFirstElement = () => {
-
+const findFirstElement = (arreglo, condition) => {
+    if (validarArray(arreglo)) {
+        return arreglo.find(condition);
+    } else {
+        return undefined;
+    }
 };
 
 // Función countElements: Contar la cantidad de elementos en un array
@@ -100,16 +107,15 @@ const agregarHabilidad = (jugador, nuevaHabilidad) => {
     Valor de retorno:
     Retorna el objeto jugador modificado con la nueva habilidad agregada.
     */
-    if(typeof jugador.habilidades !== 'undefined'){
-        for(i=0; i < jugador.habilidades.length; i++){
-            if(jugador.habilidades[i] == nuevaHabilidad){
-                return "La hablilidad ya se encuentra registrada"
-            }
-        }
-        jugador.habilidades = [nuevaHabilidad];
-    }else{
-        jugador.habilidades = [nuevaHabilidad];
+    if (!jugador.habilidades) {
+        jugador.habilidades = []
     }
+
+    if (!jugador.habilidades.includes(nuevaHabilidad)) {
+        jugador.habilidades.push(nuevaHabilidad);
+    }
+
+    return jugador;
 };
 
 // Función para calcular la duración total de reproducción de todas las películas.
@@ -118,7 +124,17 @@ const agregarHabilidad = (jugador, nuevaHabilidad) => {
 // Retorna:
 // - Un número que representa la duración total de todas las películas en minutos.
 const calcularDuracionTotal = (peliculas) => {
-
+    if (peliculas.length === 0) {
+        return 0;
+    }
+    let duracionT = 0;
+    for (let i = 0; i < peliculas.length; i++) {
+        if (!peliculas[i].hasOwnProperty('duracion') || peliculas[i].duracion < 0) {
+            continue;
+        }
+        duracionT += peliculas[i].duracion;
+    }
+    return duracionT;
 };
 
 
@@ -130,7 +146,26 @@ const calcularDuracionTotal = (peliculas) => {
 // Retorna:
 // - Un array de objetos que representan películas que coinciden con el título y el género especificados.
 const buscarPeliculas = (peliculas, titulo, genero) => {
-
+    let matrizPeliculas = []
+    if (validarArray(peliculas)) {
+        if (titulo === '') {
+            for (let i = 0; i < peliculas.length; i++) {
+                if (peliculas[i].genero === genero) {
+                    matrizPeliculas.push(peliculas[i]);
+                }
+            }
+            return matrizPeliculas;
+        }
+        if (genero === '') {
+            return peliculas;
+        }
+        for (let j = 0; j < peliculas.length; j++) {
+            if (peliculas[j].titulo === titulo && peliculas[j].genero === genero) {
+                matrizPeliculas.push(peliculas[j]);
+            }
+        }
+        return matrizPeliculas;
+    }
 };
 
 // Función para calcular el promedio de puntajes de las películas.
@@ -139,7 +174,22 @@ const buscarPeliculas = (peliculas, titulo, genero) => {
 // Retorna:
 // - Un número que representa el promedio de puntajes de todas las películas.
 const calcularPromedioPuntajes = (peliculas) => {
-
+    if (validarArray(peliculas)) {
+        let suma = 0;
+        let averge = 0;
+        let matrizLen = peliculas.length;
+        for (let i = 0; i < peliculas.length; i++) {
+            if (!peliculas[i].hasOwnProperty('puntaje') || peliculas[i].puntaje < 0) {
+                matrizLen -= 1;
+                continue;
+            }
+            suma += peliculas[i].puntaje;
+            averge = suma / matrizLen;
+        }
+        return averge;
+    } else {
+        return 0;
+    }
 };
 
 // Función para filtrar películas por año de lanzamiento.
@@ -150,7 +200,21 @@ const calcularPromedioPuntajes = (peliculas) => {
 // - Un array de objetos que representan películas lanzadas en el año especificado.
 const filtrarPorAño = (peliculas, año) => {
     // Filtrar las películas por año de lanzamiento.
-
+    let matriz = [];
+    año = parseInt(año);
+    if (!(año === null)) {
+        for (let i = 0; i < peliculas.length; i++) {
+            if (peliculas[i].año === año) {
+                matriz.push(peliculas[i]);
+            }
+        }
+        return matriz;
+    } else {
+        if (matriz.length === 0) {
+            return matriz;
+        }
+        return matriz;
+    }
 };
 
 // Función para calcular el promedio de duración de las películas por género.
@@ -161,7 +225,20 @@ const filtrarPorAño = (peliculas, año) => {
 // - Un número que representa el promedio de duración de las películas del género especificado.
 const calcularPromedioDuracionPorGenero = (peliculas, genero) => {
     // Filtrar las películas por género.
-
+    let arr = [];
+    if (validarArray(peliculas)) {
+        for (let i = 0; i < peliculas.length; i++) {
+            if (peliculas[i].genero.toLowerCase() === genero.toLowerCase()) {
+                arr.push(peliculas[i].duracion);
+            }
+        }
+        if (arr.length === 0) {
+            return 0;
+        }
+        return arr.reduce((sum, currVal) => sum += currVal) / arr.length;
+    } else {
+        return 0;
+    }
 };
 
 
@@ -173,14 +250,18 @@ class Vehiculo {
      * @param {string} modelo - El modelo del vehículo.
      * @param {number} año - El año de fabricación del vehículo.
      */
-
+    constructor(marca, modelo, año) {
+        this.marca = marca;
+        this.modelo = modelo;
+        this.año = año;
+    }
 
     /**
      * Método para obtener la información del vehículo.
      * @returns {string} - La información del vehículo en formato de cadena de texto.
      */
     obtenerInformacion() {
-
+        return `Marca: ${this.marca}, Modelo: ${this.modelo}, Año: ${this.año}`;
     }
 }
 
@@ -199,14 +280,22 @@ class Automovil extends Vehiculo {
      * @param {number} numAsientos - El número de asientos del automóvil.
      * @param {string} tipoTransmision - El tipo de transmisión del automóvil.
      */
-
+    constructor(marca, modelo, año, color, cilindrada, potencia, numPuertas, numAsientos, tipoTransmision) {
+        super(marca, modelo, año);
+        this.color = color;
+        this.cilindrada = cilindrada;
+        this.potencia = potencia;
+        this.numPuertas = numPuertas;
+        this.numAsientos = numAsientos;
+        this.tipoTransmision = tipoTransmision;
+    }
 
     /**
      * Método para obtener la información del automóvil.
      * @returns {string} - La información del automóvil en formato de cadena de texto.
      */
     obtenerInformacion() {
-
+        return super.obtenerInformacion() + `, Color: ${this.color}, Cilindrada: ${this.cilindrada}, Potencia: ${this.potencia}, Puertas: ${this.numPuertas}, Asientos: ${this.numAsientos}, Transmisión: ${this.tipoTransmision}`;
     }
 }
 
@@ -223,14 +312,21 @@ class Motocicleta extends Vehiculo {
      * @param {number} numRuedas - El número de ruedas de la motocicleta.
      * @param {string} tipo - El tipo de motocicleta (deportiva, touring, etc.).
      */
-
+    constructor(marca, modelo, año, color, cilindrada, potencia, numRuedas, tipo) {
+        super(marca, modelo, año);
+        this.color = color;
+        this.cilindrada = cilindrada;
+        this.potencia = potencia;
+        this.numRuedas = numRuedas;
+        this.tipo = tipo;
+    }
 
     /**
      * Método para obtener la información de la motocicleta.
      * @returns {string} - La información de la motocicleta en formato de cadena de texto.
      */
     obtenerInformacion() {
-
+        return super.obtenerInformacion() + `, Color: ${this.color}, Cilindrada: ${this.cilindrada}, Potencia: ${this.potencia}, Ruedas: ${this.numRuedas}, Tipo: ${this.tipo}`;
     }
 }
 
@@ -248,14 +344,22 @@ class Camion extends Vehiculo {
      * @param {number} capacidadCarga - La capacidad de carga del camión en toneladas.
      * @param {string} tipoCarroceria - El tipo de carrocería del camión (remolque, furgón, etc.).
      */
-
+    constructor(marca, modelo, año, color, cilindrada, potencia, numEjes, capacidadCarga, tipoCarroceria) {
+        super(marca, modelo, año);
+        this.color = color;
+        this.cilindrada = cilindrada;
+        this.potencia = potencia;
+        this.numEjes = numEjes;
+        this.capacidadCarga = capacidadCarga;
+        this.tipoCarroceria = tipoCarroceria;
+    }
 
     /**
      * Método para obtener la información del camión.
      * @returns {string} - La información del camión en formato de cadena de texto.
      */
     obtenerInformacion() {
-
+        return super.obtenerInformacion() + `, Color: ${this.color}, Cilindrada: ${this.cilindrada}, Potencia: ${this.potencia}, Ejes: ${this.numEjes}, Capacidad de Carga: ${this.capacidadCarga}, Tipo de Carrocería: ${this.tipoCarroceria}`;
     }
 }
 
@@ -273,14 +377,22 @@ class Autobus extends Vehiculo {
      * @param {string} tipoCombustible - El tipo de combustible del autobús.
      * @param {string} tipoMotor - El tipo de motor del autobús (diésel, gasolina, eléctrico, etc.).
      */
-
+    constructor(marca, modelo, año, color, cilindrada, potencia, capacidadPasajeros, tipoCombustible, tipoMotor) {
+        super(marca, modelo, año);
+        this.color = color;
+        this.cilindrada = cilindrada;
+        this.potencia = potencia;
+        this.capacidadPasajeros = capacidadPasajeros;
+        this.tipoCombustible = tipoCombustible;
+        this.tipoMotor = tipoMotor;
+    }
 
     /**
      * Método para obtener la información del autobús.
      * @returns {string} - La información del autobús en formato de cadena de texto.
      */
     obtenerInformacion() {
-
+        return super.obtenerInformacion() + `, Color: ${this.color}, Cilindrada: ${this.cilindrada}, Potencia: ${this.potencia}, Pasajeros: ${this.capacidadPasajeros}, Combustible: ${this.tipoCombustible}, Tipo de Motor: ${this.tipoMotor}`;
     }
 }
 
@@ -298,6 +410,15 @@ class Bicicleta extends Vehiculo {
      * @param {string} frenos - El tipo de frenos de la bicicleta (disco, v-brake, caliper, etc.).
      * @param {string} tipoManubrio - El tipo de manubrio de la bicicleta (recto, curvo, doble altura, etc.).
      */
+    constructor(marca, modelo, año, tipo, numMarchas, material, suspencion, frenos, tipoManubrio) {
+        super(marca, modelo, año);
+        this.tipo = tipo;
+        this.numMarchas = numMarchas;
+        this.material = material;
+        this.suspencion = suspencion;
+        this.frenos = frenos;
+        this.tipoManubrio = tipoManubrio;
+    }
 
 
     /**
@@ -305,7 +426,7 @@ class Bicicleta extends Vehiculo {
      * @returns {string} - La información de la bicicleta en formato de cadena de texto.
      */
     obtenerInformacion() {
-
+        return super.obtenerInformacion() + `, Tipo: ${this.tipo}, Marchas: ${this.numMarchas}, Material: ${this.material}, Suspensión: ${this.suspencion}, Frenos: ${this.frenos}, Tipo de Manubrio: ${this.tipoManubrio}`;
     }
 }
 
